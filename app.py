@@ -5,14 +5,17 @@ import subprocess
 import re
 import secrets
 from functools import wraps
+from dotenv import load_dotenv
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 
 app = Flask(__name__)
-app.secret_key = '97aszfg6h0ßa97hfAUSD7fghaü0f'  # ВАЖНО: Смените на случайную строку
+load_dotenv()
+
+app.secret_key = os.environ.get('SECRET_KEY', '97aszfg6h0ßa97hfAUSD7fghaü0f')
 
 STATS_FILE = 'stats.json'
 CODES_FILE = 'codes.json'
-ADMIN_PASSWORD = 'f5asd76gz8uh'  # ВАЖНО: Пароль для входа в админку
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'f5asd76gz8uh')
 
 # --- Работа с данными ---
 
@@ -190,4 +193,7 @@ def stop_cs2():
         return jsonify({"success": False, "error": str(e)})
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=3654, threaded=True)
+    debug_mode = os.environ.get('FLASK_DEBUG', 'True').lower() in ('1', 'true', 'yes')
+    host = os.environ.get('FLASK_HOST', '0.0.0.0')
+    port = int(os.environ.get('PORT', '3654'))
+    app.run(debug=debug_mode, host=host, port=port, threaded=True)

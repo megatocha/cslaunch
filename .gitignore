@@ -9,4 +9,6 @@
 /.trash
 .env
 *.code-workspace
+stats.json
+codes.json
 
