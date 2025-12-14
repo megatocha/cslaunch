@@ -1,7 +1,7 @@
 <h1 align="center">CS Launch</h1>
 <div align="center">
 
-English | [Russian](https://www.google.com/search?q=./README.md)
+English | [Russian](./README_ru.md)
 
 A small utility for launching and monitoring CS2 via a web interface.
 
