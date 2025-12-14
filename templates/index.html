@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CS2 Control Center</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="background-glow"></div>
+    
+    <main class="glass-container">
+    
+        <a href="/logout" class="nav-link" title="Выйти">🚪 Выйти</a>
+    
+        <header>
+            <div class="status-indicator" id="statusIndicator">
+                <span class="dot"></span>
+                <span class="status-text" id="statusText">OFFLINE</span>
+            </div>
+            <h1>CS2 SERVER CONTROLLER</h1>
+        </header>
+
+        <div class="control-section">
+            <div class="btn-wrapper">
+                <button id="mainBtn" class="action-btn start">
+                    <span class="btn-icon">▶</span>
+                    <span class="btn-text">ЗАПУСТИТЬ CS2</span>
+                </button>
+        
+                <button id="reloadBtn" class="reload-btn" style="display: none;">
+                    ↻
+                </button>
+            </div>
+        
+            <div class="message-log" id="messageLog">Подключение...</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>ТЕКУЩАЯ СЕССИЯ</h3>
+                <p id="sessionTimer">00:00:00</p>
+            </div>
+            <div class="stat-card">
+                <h3>ЗАПУСКОВ</h3>
+                <p id="launchCount">0</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>СТАТУС СЕРВЕРА</h3>
+                    <p class="highlight" id="serverStatus">CHECKING...</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>PING</h3>
+                <p id="pingStat">-- ms</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в систему</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-glow"></div>
+    
+    <div class="glass-container login-container">
+        <header>
+            <h1>ACCESS CONTROL</h1>
+        </header>
+
+        <form method="POST" class="control-section">
+            <input type="text" name="code" class="auth-input" placeholder="Введите код доступа" required autocomplete="off">
+            
+            {% if error %}
+                <div class="error-msg">{{ error }}</div>
+            {% endif %}
+
+            <button type="submit" class="action-btn start" style="margin-top: 20px;">
+                ВОЙТИ
+            </button>
+        </form>
+    </div>
+</body>
+</html>

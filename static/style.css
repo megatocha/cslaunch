@@ -1,0 +1,445 @@
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-main: #ffffff;
+    --text-muted: #a1a1aa;
+    --accent-blue: #3b82f6;
+    --accent-orange: #f59e0b;
+    /* Цвет CS2 */
+    --accent-green: #10b981;
+    --accent-red: #ef4444;
+    --font-main: 'Inter', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: #0f0f11;
+    background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f0f11 80%);
+    color: var(--text-main);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    overflow-x: hidden;
+}
+
+/* Фоновое свечение */
+.background-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+    top: -10%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: -1;
+    animation: pulseGlow 8s infinite alternate;
+}
+
+/* Контейнер карточки */
+.glass-container {
+    width: 100%;
+    max-width: 480px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    transition: transform 0.3s ease;
+}
+
+/* Header */
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+}
+
+/* Индикатор статуса */
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--text-muted);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);/* Улучшенный медиа-запрос для экранов 520px и меньше */
+/* Улучшенный медиа-запрос для экранов 520px и меньше */
+@media (max-width: 520px) {
+    /* Основной контейнер */
+    .glass-container {
+        width: 95%; /* Используем почти всю ширину */
+        max-width: none; /* Убираем ограничение в 480px, чтобы заполнить 95% */
+        padding: 20px;
+        margin: 10px; /* Немного отступа снизу и сверху */
+    }
+    
+    /* Сетка статистики (карточки) */
+    .stats-grid {
+        grid-template-columns: 1fr; /* Карточки статистики теперь выстраиваются в один столбец */
+    }
+
+    h1 {
+        font-size: 16px;
+    }
+    
+    .action-btn {
+        padding: 15px; /* Чуть меньше кнопка */
+    }
+
+    .reload-btn {
+        width: 50px; /* Меньше кнопка перезагрузки */
+    }
+}/* Улучшенный медиа-запрос для экранов 520px и меньше */
+@media (max-width: 520px) {
+
+    /* Основной контейнер */
+    .glass-container {
+        width: 95%;
+        /* Используем почти всю ширину */
+        max-width: none;
+        /* Убираем ограничение в 480px, чтобы заполнить 95% */
+        padding: 20px;
+        margin: 10px;
+        /* Немного отступа снизу и сверху */
+    }
+
+    /* Сетка статистики (карточки) */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        /* Карточки статистики теперь выстраиваются в один столбец */
+    }
+
+    h1 {
+        font-size: 16px;
+    }
+
+    .action-btn {
+        padding: 15px;
+        /* Чуть меньше кнопка */
+    }
+
+    .reload-btn {
+        width: 50px;
+        /* Меньше кнопка перезагрузки */
+    }
+}
+    transition: all 0.3s ease;
+}
+
+.status-text {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* Стили для активного состояния */
+.status-indicator.active .dot {
+    background-color: var(--accent-green);
+    box-shadow: 0 0 10px var(--accent-green);
+}
+
+.status-indicator.active .status-text {
+    color: var(--accent-green);
+}
+
+/* Кнопка */
+.control-section {
+    text-align: center;
+}
+
+.action-btn {
+    width: 100%;
+    padding: 20px;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Состояние: Запустить */
+.action-btn.start {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.action-btn.start:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.4);
+}
+
+/* Состояние: Остановить */
+.action-btn.stop {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    color: white;
+}
+
+.action-btn.stop:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4);
+}
+
+.action-btn:active {
+    transform: scale(0.98);
+}
+
+.message-log {
+    margin-top: 15px;
+    font-size: 13px;
+    color: var(--text-muted);
+    height: 20px;
+}
+
+/* Сетка статистики */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    padding: 15px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: background 0.3s;
+}
+
+.stat-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.stat-card h3 {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-card p {
+    font-size: 18px;
+    font-weight: 600;
+    font-feature-settings: "tnum";
+    /* Моноширинные цифры */
+}
+
+.highlight {
+    color: var(--accent-blue);
+}
+
+/* Анимации */
+@keyframes pulseGlow {
+    0% {
+        opacity: 0.5;
+        transform: translateX(-50%) scale(1);
+    }
+
+    100% {
+        opacity: 0.8;
+        transform: translateX(-50%) scale(1.1);
+    }
+}
+
+@media (max-width: 480px) {
+    .glass-container {
+        width: 90%;
+        padding: 25px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Обертка для кнопок, чтобы они стояли в ряд */
+.btn-wrapper {
+    display: flex;
+    gap: 12px;
+    /* Расстояние между кнопками */
+    width: 100%;
+}
+
+/* Главная кнопка теперь занимает всё доступное место */
+.action-btn {
+    flex: 1;
+    /* Остальные стили action-btn остаются прежними */
+}
+
+/* Стили для кнопки перезагрузки */
+.reload-btn {
+    width: 60px;
+    /* Квадратная кнопка */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    color: var(--text-main);
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    /* flex нужен, чтобы display: none/flex работало через JS корректно */
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.reload-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+    /* Анимация вращения при наведении */
+}
+
+.reload-btn:active {
+    transform: scale(0.95) rotate(90deg);
+}
+
+/* Когда главная кнопка заблокирована (при ошибке), делаем её более тусклой */
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.8);
+    /* Делаем серой */
+}
+
+/* --- Стили для Авторизации и Админки --- */
+
+.login-container {
+    max-width: 400px;
+}
+
+.auth-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 15px;
+    color: var(--text-main);
+    font-size: 16px;
+    outline: none;
+    text-align: center;
+    transition: border-color 0.3s;
+    font-family: var(--font-main);
+}
+
+.auth-input:focus {
+    border-color: var(--accent-blue);
+}
+
+.error-msg {
+    color: var(--accent-red);
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Элементы админки */
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.codes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.code-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 12px 15px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.code-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.code-val {
+    font-family: monospace;
+    font-size: 16px;
+    color: var(--accent-blue);
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.code-note {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: color 0.2s;
+}
+
+.delete-btn:hover {
+    color: var(--accent-red);
+}
+
+.nav-link {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Скроллбар для списка кодов */
+.codes-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.codes-list::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 4px;
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="background-glow"
+        style="background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0, 0, 0, 0) 70%);"></div>
+
+    <main class="glass-container" style="max-width: 600px;">
+        <header style="flex-direction: row; justify-content: space-between; width: 100%;">
+            <h1>УПРАВЛЕНИЕ КОДАМИ</h1>
+            <a href="/" class="nav-link">В панель →</a>
+        </header>
+
+        <div class="control-section">
+            <div class="input-group">
+                <input type="text" id="newNote" class="auth-input" placeholder="Имя владельца (напр. 'Макс')">
+                <button onclick="generateCode()" class="action-btn start" style="width: auto; padding: 0 20px;">
+                    +
+                </button>
+            </div>
+        </div>
+
+        <div class="codes-list">
+            {% for item in codes %}
+            <div class="code-item">
+                <div class="code-info">
+                    <span class="code-val">{{ item.code }}</span>
+                    <span class="code-note">{{ item.note }}</span>
+                </div>
+                <button onclick="deleteCode('{{ item.code }}')" class="delete-btn">×</button>
+            </div>
+            {% else %}
+            <p style="text-align: center; color: var(--text-muted);">Нет активных кодов</p>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/logout" style="color: var(--accent-red); text-decoration: none; font-size: 14px;">Выйти из
+                системы</a>
+        </div>
+    </main>
+
+    <script>
+        async function generateCode() {
+            const note = document.getElementById('newNote').value;
+            const res = await fetch('/admin/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ note: note })
+            });
+            if (res.ok) window.location.reload();
+        }
+
+        async function deleteCode(code) {
+            if (!confirm('Удалить этот код?')) return;
+            const res = await fetch('/admin/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: code })
+            });
+            if (res.ok) window.location.reload();
+        }
+    </script>
+</body>
+
+</html>
