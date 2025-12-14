@@ -39,5 +39,5 @@ A small utility for launching and monitoring CS2 via a web interface.
 ## 📁 Files
 
 * `app.py` — Flask server.
-* `.env.example` — Example environment variables.
+* `example.env` — Example environment variables.
 * `requirements.txt` — Dependencies.
