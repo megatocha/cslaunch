@@ -12,32 +12,376 @@ A small utility for launching and monitoring CS2 via a web interface.
 [![Release Version](https://img.shields.io/github/v/release/megatocha/cslaunch?style=for-the-badge&labelColor=fae5c0&logo=data:image/svg%2bxml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBVcGxvYWRlZCB0bzogU1ZHIFJlcG8sIHd3dy5zdmdyZXBvLmNvbSwgR2VuZXJhdG9yOiBTVkcgUmVwbyBNaXhlciBUb29scyAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIGZpbGw9IiMwMDAwMDAiIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgDQoJIHdpZHRoPSI4MDBweCIgaGVpZ2h0PSI4MDBweCIgdmlld0JveD0iMCAwIDQ2IDQ2IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxnPg0KCTxnPg0KCQk8cGF0aCBkPSJNMzYuNDU1LDE3LjA1NmgtMC4xNzRjLTEuNTc3LTYtNi44ODUtMTAuMTEzLTEzLjIwNy0xMC4xMTNzLTExLjYzLDQuMTEzLTEzLjIwNywxMC4xMTNIOS42OTMNCgkJCUM0LjM4MSwxNy4wNTYsMCwyMS42NzYsMCwyNi45ODl2Mi43NjJjMCw1LjMxMiw0LjM4MSw5LjMwNiw5LjY5Myw5LjMwNmgyNi43NjJjNS4zMTIsMCw5LjU0NS0zLjk5NCw5LjU0NS05LjMwN3YtMi43NjINCgkJCUM0NiwyMS42NzYsNDEuNzY4LDE3LjA1NiwzNi40NTUsMTcuMDU2eiBNMzEuNzM4LDIyLjU4M2wtOS42MjcsOS42MjhjLTAuODUxLDAuODUyLTIuMjI5LDAuODUyLTMuMDgsMGwtNC43NzItNC43NzENCgkJCWMtMC44NTEtMC44NTItMC44NTEtMi4yMjksMC4wMDEtMy4wOGMwLjg1LTAuODUyLDIuMjI5LTAuODUyLDMuMDc4LDBsMi44NDUsMi44NDRjMC4xMDMsMC4xMDQsMC4yNDMsMC4xNjEsMC4zODksMC4xNjENCgkJCXMwLjI4Ni0wLjA2LDAuMzg5LTAuMTYxbDcuNjk5LTcuN2MwLjQwOC0wLjQwOCwwLjk2Mi0wLjYzOCwxLjU0LTAuNjM4YzAuNTc3LDAsMS4xMzIsMC4yMjksMS41NCwwLjYzOQ0KCQkJQzMyLjU5LDIwLjM1NCwzMi41OSwyMS43MzMsMzEuNzM4LDIyLjU4M3oiLz4NCgk8L2c+DQo8L2c+DQo8L3N2Zz4=)](https://github.com/megatocha/cslaunch/releases/latest)
 
 </div>
+# 🚀 CS2 Control Center - FastAPI Version
+
+Modern remote control center for Counter-Strike 2 with web interface, access code management, and real-time monitoring.
 
 ## ⚠️ Requirements
 
-* Python 3.8+
-* Dependencies from `requirements.txt` (`flask`, `python-dotenv`)
+- **Python 3.8+** (3.11 recommended)
+- **Docker & Docker Compose** (optional, recommended)
+- Dependencies from `requirements.txt`
 
 ## 🚀 Quick Start
 
-1. Copy the environment example: `copy example.env .env` and fill in the values.
-2. Install dependencies: `pip install -r requirements.txt`
-3. Run the application: `python app.py`
+### Option 1: Docker (Recommended)
+
+```bash
+# 1. Clone repository
+git clone <repository-url>
+cd cs2-controller
+
+# 2. Copy environment example
+copy example.env .env  # Windows
+cp example.env .env    # Linux/Mac
+
+# 3. Edit .env file with your values
+# Set SECRET_KEY and ADMIN_PASSWORD
+
+# 4. Start with Docker Compose
+docker-compose up -d
+
+# 5. Check logs
+docker-compose logs -f
+
+# Access at http://localhost:8000
+```
+
+### Option 2: Local Installation
+
+```bash
+# 1. Create virtual environment
+python -m venv venv
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # Linux/Mac
+
+# 2. Copy environment example
+copy example.env .env  # Windows
+cp example.env .env    # Linux/Mac
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Run application
+python main.py
+# or
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+# Access at http://localhost:8000
+```
 
 ## ⚙️ Configuration (.env)
 
-* `SECRET_KEY` — A secret for Flask sessions.
-* `ADMIN_PASSWORD` — Administrator password (used for access to `/admin`).
-* `FLASK_DEBUG`, `PORT`, `FLASK_HOST` — Optional.
+```env
+# Security (REQUIRED)
+SECRET_KEY=your-super-secret-key-change-this
+ADMIN_PASSWORD=your-admin-password
+
+# Server Configuration
+HOST=0.0.0.0
+PORT=8000
+DEBUG=True  # Set to False in production
+```
+
+### Environment Variables
+
+- `SECRET_KEY` — Secret key for session encryption (required)
+- `ADMIN_PASSWORD` — Administrator password for `/admin` access (required)
+- `HOST` — Server host (default: 0.0.0.0)
+- `PORT` — Server port (default: 8000)
+- `DEBUG` — Debug mode (default: True, set to False in production)
 
 ## 🔗 Routes
 
-* `/login` — Login form (by code or admin password).
-* `/` — Main page, requires authorization.
-* `/admin` — Administrator panel (requires admin access).
+### Public Routes
 
-## 📁 Files
+- `GET /login` — Login page (by access code or admin password)
+- `POST /login` — Login authentication
+- `GET /logout` — Logout
 
-* `app.py` — Flask server.
-* `example.env` — Example environment variables.
-* `requirements.txt` — Dependencies.
+### Protected Routes (Requires Authentication)
+
+- `GET /` — Main control panel
+- `GET /get-status` — Server status (JSON)
+- `POST /start-cs2` — Start CS2 game
+- `POST /stop-cs2` — Stop CS2 game
+
+### Admin Routes (Requires Admin Access)
+
+- `GET /admin` — Admin panel for code management
+- `POST /admin/generate` — Generate new access code
+- `POST /admin/delete` — Delete access code
+
+## 📚 API Documentation
+
+After starting the server:
+
+- **Swagger UI**: <http://localhost:4242/docs>
+- **ReDoc**: <http://localhost:4242/redoc>
+
+## 🐳 Docker Commands
+
+```bash
+# Build image
+docker-compose build
+
+# Start containers
+docker-compose up -d
+
+# Stop containers
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Restart containers
+docker-compose restart
+
+# Remove all data
+docker-compose down -v
+
+# Open shell in container
+docker-compose exec cs2-controller /bin/bash
+```
+
+Or use Makefile:
+
+```bash
+make build    # Build image
+make up       # Start containers
+make down     # Stop containers
+make logs     # View logs
+make restart  # Restart
+make clean    # Clean all data
+```
+
+## 📁 Project Structure
+
+```
+cs2-controller/
+│
+├── app/
+│   ├── __init__.py
+│   ├── config.py          # Application configuration
+│   ├── models.py          # Pydantic models
+│   ├── services.py        # Business logic
+│   ├── dependencies.py    # FastAPI dependencies
+│   │
+│   └── routers/
+│       ├── __init__.py
+│       ├── auth.py        # Authentication
+│       ├── admin.py       # Admin panel
+│       └── control.py     # CS2 control
+│
+├── templates/
+│   ├── index.html         # Main page
+│   ├── login.html         # Login page
+│   └── admin.html         # Admin panel
+│
+├── static/
+│   ├── style.css          # Styles
+│   └── script.js          # Frontend logic
+│
+├── data/                  # Created automatically
+│   ├── stats.json         # Statistics
+│   └── codes.json         # Access codes
+│
+├── main.py                # Application entry point
+├── requirements.txt       # Python dependencies
+├── Dockerfile             # Docker image
+├── docker-compose.yml     # Docker Compose config
+├── .dockerignore          # Docker ignore file
+├── example.env            # Environment example
+├── Makefile               # Quick commands
+└── README.md              # This file
+```
+
+## ✨ Key Features
+
+### 1. **Modular Architecture**
+
+- Separated routers (auth, admin, control)
+- Business logic in services
+- Clear separation of concerns
+
+### 2. **Pydantic Validation**
+
+- Automatic input validation
+- Type-safe responses
+- Auto-generated documentation
+
+### 3. **Dependency Injection**
+
+- Reusable authentication checks
+- Clean code without duplication
+- Easy testing
+
+### 4. **Services**
+
+- `DataService` - JSON file operations
+- `CodeService` - Access code management
+- `StatsService` - Statistics tracking
+- `CS2Service` - Game process control
+
+### 5. **Docker Support**
+
+- One-command deployment
+- Isolated environment
+- Easy scaling
+- Production-ready
+
+## 🔒 Security Features
+
+- Session-based authentication
+- Pydantic input validation
+- Admin-only routes protection
+- Secure password handling
+- HTTPS ready (configure reverse proxy)
+
+## 🚦 Production Deployment
+
+### 1. Using Docker (Recommended)
+
+```bash
+# Set production environment
+echo "DEBUG=False" >> .env
+
+# Use strong secrets
+echo "SECRET_KEY=$(openssl rand -hex 32)" >> .env
+
+# Start with production settings
+docker-compose up -d
+```
+
+### 2. Behind Nginx (Reverse Proxy)
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        proxy_pass http://localhost:4242;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+```
+
+### 3. Using systemd (Linux)
+
+```ini
+# /etc/systemd/system/cs2-controller.service
+[Unit]
+Description=CS2 Controller
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/path/to/cs2-controller
+Environment="PATH=/path/to/venv/bin"
+ExecStart=/path/to/venv/bin/uvicorn main:app --host 0.0.0.0 --port 4242
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+## 🛠️ Development
+
+```bash
+# Install dev dependencies
+pip install -r requirements.txt
+
+# Run with auto-reload
+uvicorn main:app --reload
+
+# Run tests (if available)
+pytest
+
+# Format code
+black .
+isort .
+
+# Type checking
+mypy .
+```
+
+## 📊 Monitoring
+
+### Health Check
+
+```bash
+curl http://localhost:4242/login
+```
+
+### Docker Health
+
+```bash
+docker-compose ps
+```
+
+### Logs
+
+```bash
+# Docker logs
+docker-compose logs -f
+
+# App logs (if configured)
+tail -f logs/app.log
+```
+
+## 🐛 Troubleshooting
+
+### Port already in use
+
+```bash
+# Change PORT in .env file
+PORT=6969
+
+# Or stop conflicting service
+# Windows
+netstat -ano | findstr :8000
+taskkill /PID <PID> /F
+
+# Linux
+sudo lsof -i :8000
+kill -9 <PID>
+```
+
+### Permission denied (Docker)
+
+```bash
+# Fix data directory permissions
+sudo chown -R $USER:$USER data/
+chmod 755 data/
+```
+
+### Container won't start
+
+```bash
+# Check logs
+docker-compose logs
+
+# Rebuild image
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+## 📝 License
+
+This project is provided as-is for educational purposes.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit pull requests.
+
+## 📧 Support
+
+For issues and questions, please open an issue on GitHub.
+
+---
+
+Made with ❤️ for CS2 community

@@ -15,29 +15,370 @@
 
 ## ⚠️ Требования
 
-- Python 3.8+
-- Зависимости из `requirements.txt` (`flask`, `python-dotenv`)
+- **Python 3.8+** (рекомендуется 3.11)
+- **Docker & Docker Compose** (опционально, рекомендуется)
+- Зависимости из `requirements.txt`
 
 ## 🚀 Быстрый старт
 
-1. Скопируйте пример окружения: `copy example.env .env` и заполните значения.
-2. Установите зависимости: `pip install -r requirements.txt`
-3. Запустите приложение: `python app.py`
+### Вариант 1: Docker (Рекомендуется)
+
+```bash
+# 1. Клонируйте репозиторий
+git clone <repository-url>
+cd cs2-controller
+
+# 2. Скопируйте пример окружения
+copy example.env .env  # Windows
+cp example.env .env    # Linux/Mac
+
+# 3. Отредактируйте .env файл со своими значениями
+# Установите SECRET_KEY и ADMIN_PASSWORD
+
+# 4. Запустите через Docker Compose
+docker-compose up -d
+
+# 5. Проверьте логи
+docker-compose logs -f
+
+# Доступно по адресу http://localhost:4242
+```
+
+### Вариант 2: Локальная установка
+
+```bash
+# 1. Создайте виртуальное окружение
+python -m venv venv
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # Linux/Mac
+
+# 2. Скопируйте пример окружения
+copy example.env .env  # Windows
+cp example.env .env    # Linux/Mac
+
+# 3. Установите зависимости
+pip install -r requirements.txt
+
+# 4. Запустите приложение
+python main.py
+# или
+uvicorn main:app --reload --host 0.0.0.0 --port 4242
+
+# Доступно по адресу http://localhost:4242
+```
 
 ## ⚙️ Конфигурация (.env)
 
-- `SECRET_KEY` — секрет для Flask-сессий.
-- `ADMIN_PASSWORD` — пароль администратора (используется для доступа в `/admin`).
-- `FLASK_DEBUG`, `PORT`, `FLASK_HOST` — опционально.
+```env
+# Безопасность (ОБЯЗАТЕЛЬНО)
+SECRET_KEY=ваш-супер-секретный-ключ-измените-это
+ADMIN_PASSWORD=ваш-пароль-администратора
+
+# Конфигурация сервера
+HOST=0.0.0.0
+PORT=8000
+DEBUG=True  # Установите False для продакшена
+```
+
+### Переменные окружения
+
+- `SECRET_KEY` — Секретный ключ для шифрования сессий (обязательно)
+- `ADMIN_PASSWORD` — Пароль администратора для доступа к `/admin` (обязательно)
+- `HOST` — Хост сервера (по умолчанию: 0.0.0.0)
+- `PORT` — Порт сервера (по умолчанию: 8000)
+- `DEBUG` — Режим отладки (по умолчанию: True, установите False в продакшене)
 
 ## 🔗 Маршруты
 
-- `/login` — форма входа (по коду или админ-паролю).
-- `/` — главная, требует авторизации.
-- `/admin` — панель администратора (требует админ-доступ).
+### Публичные маршруты
 
-## 📁 Файлы
+- `GET /login` — Страница входа (по коду доступа или админ-паролю)
+- `POST /login` — Аутентификация
+- `GET /logout` — Выход
 
-- `app.py` — сервер Flask.
-- `example.env` — пример переменных окружения.
-- `requirements.txt` — зависимости.
+### Защищенные маршруты (требуется авторизация)
+
+- `GET /` — Главная панель управления
+- `GET /get-status` — Статус сервера (JSON)
+- `POST /start-cs2` — Запустить CS2
+- `POST /stop-cs2` — Остановить CS2
+
+### Админ-маршруты (требуется доступ администратора)
+
+- `GET /admin` — Админ-панель для управления кодами
+- `POST /admin/generate` — Сгенерировать новый код доступа
+- `POST /admin/delete` — Удалить код доступа
+
+## 📚 Документация API
+
+После запуска сервера:
+
+- **Swagger UI**: <http://localhost:4242/docs>
+- **ReDoc**: <http://localhost:4242/redoc>
+
+## 🐳 Docker команды
+
+```bash
+# Собрать образ
+docker-compose build
+
+# Запустить контейнеры
+docker-compose up -d
+
+# Остановить контейнеры
+docker-compose down
+
+# Просмотреть логи
+docker-compose logs -f
+
+# Перезапустить контейнеры
+docker-compose restart
+
+# Удалить все данные
+docker-compose down -v
+
+# Открыть shell в контейнере
+docker-compose exec cs2-controller /bin/bash
+```
+
+Или используйте Makefile:
+
+```bash
+make build    # Собрать образ
+make up       # Запустить контейнеры
+make down     # Остановить контейнеры
+make logs     # Просмотреть логи
+make restart  # Перезапустить
+make clean    # Очистить все данные
+```
+
+## 📁 Структура проекта
+
+```
+cs2-controller/
+│
+├── app/
+│   ├── __init__.py
+│   ├── config.py          # Конфигурация приложения
+│   ├── models.py          # Pydantic модели
+│   ├── services.py        # Бизнес-логика
+│   ├── dependencies.py    # FastAPI зависимости
+│   │
+│   └── routers/
+│       ├── __init__.py
+│       ├── auth.py        # Авторизация
+│       ├── admin.py       # Админ-панель
+│       └── control.py     # Управление CS2
+│
+├── templates/
+│   ├── index.html         # Главная страница
+│   ├── login.html         # Страница входа
+│   └── admin.html         # Админ-панель
+│
+├── static/
+│   ├── style.css          # Стили
+│   └── script.js          # Фронтенд логика
+│
+├── data/                  # Создается автоматически
+│   ├── stats.json         # Статистика
+│   └── codes.json         # Коды доступа
+│
+├── main.py                # Точка входа приложения
+├── requirements.txt       # Python зависимости
+├── Dockerfile             # Docker образ
+├── docker-compose.yml     # Docker Compose конфиг
+├── .dockerignore          # Docker ignore файл
+├── example.env            # Пример окружения
+├── Makefile               # Быстрые команды
+└── README.md              # Этот файл
+```
+
+## ✨ Ключевые возможности
+
+### 1. **Модульная архитектура**
+
+- Разделенные роутеры (auth, admin, control)
+- Бизнес-логика в сервисах
+- Четкое разделение ответственности
+
+### 2. **Pydantic валидация**
+
+- Автоматическая валидация входных данных
+- Типобезопасные ответы
+- Автоматически генерируемая документация
+
+### 3. **Dependency Injection**
+
+- Переиспользуемые проверки авторизации
+- Чистый код без дублирования
+- Легкое тестирование
+
+### 4. **Сервисы**
+
+- `DataService` - операции с JSON файлами
+- `CodeService` - управление кодами доступа
+- `StatsService` - отслеживание статистики
+- `CS2Service` - управление игровым процессом
+
+### 5. **Поддержка Docker**
+
+- Развертывание одной командой
+- Изолированная среда
+- Легкое масштабирование
+- Готовность к продакшену
+
+## 🔒 Функции безопасности
+
+- Аутентификация на основе сессий
+- Pydantic валидация входных данных
+- Защита админ-маршрутов
+- Безопасная обработка паролей
+- Готовность к HTTPS (настройте reverse proxy)
+
+## 🚦 Развертывание в продакшене
+
+### 1. Использование Docker (Рекомендуется)
+
+```bash
+# Установите продакшен окружение
+echo "DEBUG=False" >> .env
+
+# Используйте надежные секреты
+echo "SECRET_KEY=$(openssl rand -hex 32)" >> .env
+
+# Запустите с продакшен настройками
+docker-compose up -d
+```
+
+### 2. За Nginx (Reverse Proxy)
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        proxy_pass http://localhost:4242;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+```
+
+### 3. Использование systemd (Linux)
+
+```ini
+# /etc/systemd/system/cs2-controller.service
+[Unit]
+Description=CS2 Controller
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/path/to/cs2-controller
+Environment="PATH=/path/to/venv/bin"
+ExecStart=/path/to/venv/bin/uvicorn main:app --host 0.0.0.0 --port 4242
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+## 🛠️ Разработка
+
+```bash
+# Установите dev зависимости
+pip install -r requirements.txt
+
+# Запустите с авто-перезагрузкой
+uvicorn main:app --reload
+
+# Запустите тесты (если доступны)
+pytest
+
+# Форматирование кода
+black .
+isort .
+
+# Проверка типов
+mypy .
+```
+
+## 📊 Мониторинг
+
+### Health Check
+
+```bash
+curl http://localhost:4242/login
+```
+
+### Docker Health
+
+```bash
+docker-compose ps
+```
+
+### Логи
+
+```bash
+# Docker логи
+docker-compose logs -f
+
+# Логи приложения (если настроено)
+tail -f logs/app.log
+```
+
+## 🐛 Устранение неполадок
+
+### Порт уже используется
+
+```bash
+# Измените PORT в .env файле
+PORT=6969
+
+# И остановите конфликтующий сервис
+# Windows
+netstat -ano | findstr :8000
+taskkill /PID <PID> /F
+
+# Linux
+sudo lsof -i :8000
+kill -9 <PID>
+```
+
+### Отказано в доступе (Docker)
+
+```bash
+# Исправьте права доступа к директории data
+sudo chown -R $USER:$USER data/
+chmod 755 data/
+```
+
+### Контейнер не запускается
+
+```bash
+# Проверьте логи
+docker-compose logs
+
+# Пересоберите образ
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+## 📝 Лицензия
+
+Этот проект предоставляется как есть в образовательных целях.
+
+## 🤝 Вклад
+
+Вклады приветствуются! Пожалуйста, не стесняйтесь отправлять pull requests.
+
+## 📧 Поддержка
+
+По вопросам и проблемам, пожалуйста, откройте issue на GitHub.
+
+---
+
+Сделано с ❤️ для CS2 сообщества

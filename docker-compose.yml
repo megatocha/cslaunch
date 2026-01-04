@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  cs2-controller:
+    build: .
+    container_name: cs2-controller
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=${DEBUG:-False}
+    volumes:
+      # Монтируем директорию data для сохранения данных
+      - ./data:/app/data
+      # Опционально: монтируем логи
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - cs2-network
+    # Ограничение ресурсов (опционально)
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+networks:
+  cs2-network:
+    driver: bridge

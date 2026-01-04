@@ -14,8 +14,11 @@
     <div class="background-glow"></div>
     
     <main class="glass-container">
-    
-        <a href="/logout" class="nav-link" title="Выйти">🚪 Выйти</a>
+        
+        <header style="flex-direction: row; justify-content: space-between; width: 100%;">
+            <a href="/logout" class="nav-link" title="Выйти">🚪 Выйти</a>
+            <a href="/admin" class="nav-link" title="Админ панель">⚙️ Админ</a>
+        </header>
     
         <header>
             <div class="status-indicator" id="statusIndicator">
@@ -49,11 +52,9 @@
                 <h3>ЗАПУСКОВ</h3>
                 <p id="launchCount">0</p>
             </div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>СТАТУС СЕРВЕРА</h3>
-                    <p class="highlight" id="serverStatus">CHECKING...</p>
-                </div>
+            <div class="stat-card">
+                <h3>СТАТУС СЕРВЕРА</h3>
+                <p class="highlight" id="serverStatus">CHECKING...</p>
             </div>
             <div class="stat-card">
                 <h3>PING</h3>

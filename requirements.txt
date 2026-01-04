@@ -1,2 +1,9 @@
-flask
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
 python-dotenv
+jinja2
+python-multipart
+itsdangerous
+starlette

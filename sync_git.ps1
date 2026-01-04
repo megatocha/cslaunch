@@ -48,7 +48,11 @@ while ($true) {
             Log "Remote: $remote"
             Log "Update found. Pulling..."
             git pull origin main 2>&1 | ForEach-Object { Log $_ }
-            Log "Update complete."
+
+            Log "Rebuilding containers..."
+            docker compose up -d --build 2>&1 | ForEach-Object { Log $_ }
+
+            Log "Update complete!"
         }
     }
     catch {
