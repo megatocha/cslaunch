@@ -28,7 +28,6 @@ class DeleteCodeRequest(BaseModel):
 class StatusResponse(BaseModel):
     """Ответ статуса сервера"""
     running: bool
-    ping: str
     launches: int
     start_time: Optional[float]
 

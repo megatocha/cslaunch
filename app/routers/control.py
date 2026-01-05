@@ -12,7 +12,6 @@ async def get_status(session: dict = Depends(require_auth)):
     """Получить статус сервера"""
     stats = StatsService.get_stats()
     is_running = CS2Service.is_running()
-    ping = CS2Service.get_ping()
     
     # Обновление времени старта
     if is_running and stats.start_time is None:
@@ -25,7 +24,6 @@ async def get_status(session: dict = Depends(require_auth)):
     
     return StatusResponse(
         running=is_running,
-        ping=ping,
         launches=stats.launches,
         start_time=stats.start_time
     )

@@ -16,35 +16,11 @@
 ## ⚠️ Требования
 
 - **Python 3.8+** (рекомендуется 3.11)
-- **Docker & Docker Compose** (опционально, рекомендуется)
 - Зависимости из `requirements.txt`
 
 ## 🚀 Быстрый старт
 
-### Вариант 1: Docker (Рекомендуется)
-
-```bash
-# 1. Клонируйте репозиторий
-git clone <repository-url>
-cd cs2-controller
-
-# 2. Скопируйте пример окружения
-copy example.env .env  # Windows
-cp example.env .env    # Linux/Mac
-
-# 3. Отредактируйте .env файл со своими значениями
-# Установите SECRET_KEY и ADMIN_PASSWORD
-
-# 4. Запустите через Docker Compose
-docker-compose up -d
-
-# 5. Проверьте логи
-docker-compose logs -f
-
-# Доступно по адресу http://localhost:4242
-```
-
-### Вариант 2: Локальная установка
+### Локальная установка
 
 ```bash
 # 1. Создайте виртуальное окружение
@@ -116,42 +92,6 @@ DEBUG=True  # Установите False для продакшена
 - **Swagger UI**: <http://localhost:4242/docs>
 - **ReDoc**: <http://localhost:4242/redoc>
 
-## 🐳 Docker команды
-
-```bash
-# Собрать образ
-docker-compose build
-
-# Запустить контейнеры
-docker-compose up -d
-
-# Остановить контейнеры
-docker-compose down
-
-# Просмотреть логи
-docker-compose logs -f
-
-# Перезапустить контейнеры
-docker-compose restart
-
-# Удалить все данные
-docker-compose down -v
-
-# Открыть shell в контейнере
-docker-compose exec cs2-controller /bin/bash
-```
-
-Или используйте Makefile:
-
-```bash
-make build    # Собрать образ
-make up       # Запустить контейнеры
-make down     # Остановить контейнеры
-make logs     # Просмотреть логи
-make restart  # Перезапустить
-make clean    # Очистить все данные
-```
-
 ## 📁 Структура проекта
 
 ```
@@ -185,11 +125,7 @@ cs2-controller/
 │
 ├── main.py                # Точка входа приложения
 ├── requirements.txt       # Python зависимости
-├── Dockerfile             # Docker образ
-├── docker-compose.yml     # Docker Compose конфиг
-├── .dockerignore          # Docker ignore файл
 ├── example.env            # Пример окружения
-├── Makefile               # Быстрые команды
 └── README.md              # Этот файл
 ```
 
@@ -220,13 +156,6 @@ cs2-controller/
 - `StatsService` - отслеживание статистики
 - `CS2Service` - управление игровым процессом
 
-### 5. **Поддержка Docker**
-
-- Развертывание одной командой
-- Изолированная среда
-- Легкое масштабирование
-- Готовность к продакшену
-
 ## 🔒 Функции безопасности
 
 - Аутентификация на основе сессий
@@ -234,57 +163,6 @@ cs2-controller/
 - Защита админ-маршрутов
 - Безопасная обработка паролей
 - Готовность к HTTPS (настройте reverse proxy)
-
-## 🚦 Развертывание в продакшене
-
-### 1. Использование Docker (Рекомендуется)
-
-```bash
-# Установите продакшен окружение
-echo "DEBUG=False" >> .env
-
-# Используйте надежные секреты
-echo "SECRET_KEY=$(openssl rand -hex 32)" >> .env
-
-# Запустите с продакшен настройками
-docker-compose up -d
-```
-
-### 2. За Nginx (Reverse Proxy)
-
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-
-    location / {
-        proxy_pass http://localhost:4242;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
-}
-```
-
-### 3. Использование systemd (Linux)
-
-```ini
-# /etc/systemd/system/cs2-controller.service
-[Unit]
-Description=CS2 Controller
-After=network.target
-
-[Service]
-Type=simple
-User=www-data
-WorkingDirectory=/path/to/cs2-controller
-Environment="PATH=/path/to/venv/bin"
-ExecStart=/path/to/venv/bin/uvicorn main:app --host 0.0.0.0 --port 4242
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
 
 ## 🛠️ Разработка
 

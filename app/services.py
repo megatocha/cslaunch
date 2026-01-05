@@ -142,22 +142,6 @@ class CS2Service:
             return False
     
     @staticmethod
-    def get_ping() -> str:
-        """Получить пинг до 8.8.8.8"""
-        try:
-            output = subprocess.check_output(
-                "ping -n 1 -w 1000 8.8.8.8",
-                shell=True
-            ).decode('cp866', errors='ignore')
-            
-            match = re.search(r'(время|time)[=<](\d+)мс?', output)
-            if match:
-                return f"{match.group(2)} ms"
-            return "TIMEOUT"
-        except Exception:
-            return "OFFLINE"
-    
-    @staticmethod
     def start() -> bool:
         """Запустить CS2"""
         try:

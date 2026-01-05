@@ -16,35 +16,11 @@ A small utility for launching and monitoring CS2 via a web interface.
 ## ⚠️ Requirements
 
 - **Python 3.8+** (3.11 recommended)
-- **Docker & Docker Compose** (optional, recommended)
 - Dependencies from `requirements.txt`
 
 ## 🚀 Quick Start
 
-### Option 1: Docker (Recommended)
-
-```bash
-# 1. Clone repository
-git clone <repository-url>
-cd cs2-controller
-
-# 2. Copy environment example
-copy example.env .env  # Windows
-cp example.env .env    # Linux/Mac
-
-# 3. Edit .env file with your values
-# Set SECRET_KEY and ADMIN_PASSWORD
-
-# 4. Start with Docker Compose
-docker-compose up -d
-
-# 5. Check logs
-docker-compose logs -f
-
-# Access at http://localhost:8000
-```
-
-### Option 2: Local Installation
+### Local Installation
 
 ```bash
 # 1. Create virtual environment
@@ -116,46 +92,10 @@ After starting the server:
 - **Swagger UI**: <http://localhost:4242/docs>
 - **ReDoc**: <http://localhost:4242/redoc>
 
-## 🐳 Docker Commands
-
-```bash
-# Build image
-docker-compose build
-
-# Start containers
-docker-compose up -d
-
-# Stop containers
-docker-compose down
-
-# View logs
-docker-compose logs -f
-
-# Restart containers
-docker-compose restart
-
-# Remove all data
-docker-compose down -v
-
-# Open shell in container
-docker-compose exec cs2-controller /bin/bash
-```
-
-Or use Makefile:
-
-```bash
-make build    # Build image
-make up       # Start containers
-make down     # Stop containers
-make logs     # View logs
-make restart  # Restart
-make clean    # Clean all data
-```
-
 ## 📁 Project Structure
 
 ```
-cs2-controller/
+cslaunch/
 │
 ├── app/
 │   ├── __init__.py
@@ -185,11 +125,8 @@ cs2-controller/
 │
 ├── main.py                # Application entry point
 ├── requirements.txt       # Python dependencies
-├── Dockerfile             # Docker image
-├── docker-compose.yml     # Docker Compose config
 ├── .dockerignore          # Docker ignore file
 ├── example.env            # Environment example
-├── Makefile               # Quick commands
 └── README.md              # This file
 ```
 
@@ -220,13 +157,6 @@ cs2-controller/
 - `StatsService` - Statistics tracking
 - `CS2Service` - Game process control
 
-### 5. **Docker Support**
-
-- One-command deployment
-- Isolated environment
-- Easy scaling
-- Production-ready
-
 ## 🔒 Security Features
 
 - Session-based authentication
@@ -234,57 +164,6 @@ cs2-controller/
 - Admin-only routes protection
 - Secure password handling
 - HTTPS ready (configure reverse proxy)
-
-## 🚦 Production Deployment
-
-### 1. Using Docker (Recommended)
-
-```bash
-# Set production environment
-echo "DEBUG=False" >> .env
-
-# Use strong secrets
-echo "SECRET_KEY=$(openssl rand -hex 32)" >> .env
-
-# Start with production settings
-docker-compose up -d
-```
-
-### 2. Behind Nginx (Reverse Proxy)
-
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-
-    location / {
-        proxy_pass http://localhost:4242;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
-}
-```
-
-### 3. Using systemd (Linux)
-
-```ini
-# /etc/systemd/system/cs2-controller.service
-[Unit]
-Description=CS2 Controller
-After=network.target
-
-[Service]
-Type=simple
-User=www-data
-WorkingDirectory=/path/to/cs2-controller
-Environment="PATH=/path/to/venv/bin"
-ExecStart=/path/to/venv/bin/uvicorn main:app --host 0.0.0.0 --port 4242
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
 
 ## 🛠️ Development
 
@@ -306,30 +185,6 @@ isort .
 mypy .
 ```
 
-## 📊 Monitoring
-
-### Health Check
-
-```bash
-curl http://localhost:4242/login
-```
-
-### Docker Health
-
-```bash
-docker-compose ps
-```
-
-### Logs
-
-```bash
-# Docker logs
-docker-compose logs -f
-
-# App logs (if configured)
-tail -f logs/app.log
-```
-
 ## 🐛 Troubleshooting
 
 ### Port already in use
@@ -346,25 +201,6 @@ taskkill /PID <PID> /F
 # Linux
 sudo lsof -i :8000
 kill -9 <PID>
-```
-
-### Permission denied (Docker)
-
-```bash
-# Fix data directory permissions
-sudo chown -R $USER:$USER data/
-chmod 755 data/
-```
-
-### Container won't start
-
-```bash
-# Check logs
-docker-compose logs
-
-# Rebuild image
-docker-compose build --no-cache
-docker-compose up -d
 ```
 
 ## 📝 License

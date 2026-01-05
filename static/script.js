@@ -12,10 +12,6 @@ const statusText = document.getElementById('statusText');
 const messageLog = document.getElementById('messageLog');
 const timerDisplay = document.getElementById('sessionTimer');
 const launchCountDisplay = document.getElementById('launchCount');
-const pingStat = document.getElementById('pingStat');
-
-// Добавляем новый элемент для управления
-const serverStatus = document.getElementById('serverStatus'); 
 
 // --- ОСНОВНОЙ ЦИКЛ ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -41,7 +37,6 @@ async function fetchStatus() {
         disableErrorMode(); 
 
         launchCountDisplay.textContent = data.launches;
-        pingStat.textContent = data.ping;
         startTimeStamp = data.start_time;
 
         // Логика обновления статуса игры
@@ -76,10 +71,6 @@ async function fetchStatus() {
 function enableErrorMode() {
     // Обновление общего статуса
     statusText.textContent = "CONN. ERROR";
-    pingStat.textContent = "ERR";
-    
-    // Обновление карточки "Статус Сервера"
-    serverStatus.textContent = "ERROR"; 
     
     // Блокируем и меняем вид главной кнопки
     mainBtn.disabled = true;
@@ -99,12 +90,6 @@ function disableErrorMode() {
         mainBtn.disabled = false;
         reloadBtn.style.display = 'none'; 
         document.querySelector('.dot').style.backgroundColor = '';
-        
-        // Устанавливаем статус сервера как ACTIVE (т.к. запрос успешно прошел)
-        serverStatus.textContent = 'ACTIVE'; 
-    } else if (serverStatus.textContent !== 'ACTIVE') {
-         // Устанавливаем ACTIVE при первой успешной загрузке
-         serverStatus.textContent = 'ACTIVE';
     }
 }
 
