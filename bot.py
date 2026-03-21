@@ -2,9 +2,9 @@ import asyncio
 import logging
 import sys
 import time
-from datetime import datetime
 
 from aiogram import Bot, Dispatcher, F, types
+from aiogram.client.default import DefaultBotProperties
 from aiogram.filters import Command
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.exceptions import TelegramBadRequest
@@ -15,7 +15,7 @@ from app.services import CS2Service, StatsService
 
 log = config.setup_logging(logging.getLogger("__name__"))
 
-bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
+bot = Bot(token=settings.TELEGRAM_BOT_TOKEN, default=DefaultBotProperties(parse_mode="HTML"))
 dp = Dispatcher()
 
 # --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
@@ -30,7 +30,7 @@ def get_uptime(start_time):
     seconds = diff % 60
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
-def get_dashboard_data():
+def get_dashboard_data(starting=False):
     """Собирает текст и клавиатуру для сообщения"""
     is_running = CS2Service.is_running()
     stats = StatsService.get_stats()
@@ -42,24 +42,23 @@ def get_dashboard_data():
         StatsService.set_start_time(None)
         stats = StatsService.get_stats()
 
-    status_icon = "🟢 ONLINE" if is_running else "🔴 OFFLINE"
+    status_icon = "🟣 STARTING..." if starting else "🟢 ONLINE!" if is_running else "🔘 OFFLINE."
     uptime = get_uptime(stats.start_time)
     
     text = (
-        f"<b>🎮 CS2 CONTROL CENTER</b>\n\n"
-        f"Статус: {status_icon}\n"
-        f"Время сессии: <code>{uptime}</code>\n"
-        f"Всего запусков: <code>{stats.launches}</code>"
+        f"<b>Статус:</b> {status_icon}\n"
+        f"<b>Время сессии:</b> {uptime}\n"
+        f"<b>Всего запусков:</b> {stats.launches}"
     )
     
     kb = InlineKeyboardBuilder()
 
     if is_running:
-        action_btn = kb.button(text="⏹ ОСТАНОВИТЬ", callback_data="stop_cs2")
+        kb.button(text="⏹ ОСТАНОВИТЬ", callback_data="stop_cs2")
     else:
-        action_btn = kb.button(text="▶️ ЗАПУСТИТЬ", callback_data="start_cs2")
+        kb.button(text="▶️ ЗАПУСТИТЬ", callback_data="start_cs2")
         
-    refresh_btn = kb.button(text="🔄 Обновить статус", callback_data="refresh")
+    kb.button(text="🔄 Обновить статус", callback_data="refresh")
     kb.adjust(2)
 
     return text, kb.as_markup()
@@ -103,7 +102,6 @@ async def process_refresh(callback: types.CallbackQuery):
 @dp.callback_query(F.data == "start_cs2")
 async def process_start(callback: types.CallbackQuery):
     """Запуск игры"""
-    await callback.answer("Запуск CS2...")
     log.debug("Запуск CS2...")
     
     if CS2Service.is_running():
@@ -112,9 +110,12 @@ async def process_start(callback: types.CallbackQuery):
         success = CS2Service.start()
         if not success:
             await callback.answer("Ошибка при запуске!", show_alert=True)
-            log.error("Ошибка при запуске CS2")
+            log.error(f"Ошибка при запуске: {success}")
     
-    await asyncio.sleep(2)
+    await callback.answer("Запуск CS2...")
+    text, reply_markup = get_dashboard_data(True)
+    await callback.message.edit_text(text, reply_markup=reply_markup, parse_mode="HTML")
+    await asyncio.sleep(4)
     text, reply_markup = get_dashboard_data()
     await callback.message.edit_text(text, reply_markup=reply_markup, parse_mode="HTML")
 
@@ -127,7 +128,7 @@ async def process_stop(callback: types.CallbackQuery):
     
     CS2Service.stop()
     
-    await asyncio.sleep(2)
+    await asyncio.sleep(3)
     text, reply_markup = get_dashboard_data()
     await callback.message.edit_text(text, reply_markup=reply_markup, parse_mode="HTML")
 
